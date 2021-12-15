@@ -15,9 +15,8 @@ from datetime import date, datetime
 import random
 
 app = Flask(__name__)
-deta = Deta("b03oxp00_qDTFNmBnqUrLY43FmivmyHBGEHemoYZw")
-# app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
-app.config['SECRET_KEY'] = b']\x9fE\xc2\xc3\xa4\xa2!\xdck\x92\xda\xdb-;9'
+deta = Deta("")
+app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
 
 gravatar = Gravatar(
     app,
