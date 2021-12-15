@@ -5,7 +5,7 @@ from flask import (
     redirect,
     url_for,
     request,
-    flash
+    flash,
 )
 from deta import Deta
 import os
@@ -40,60 +40,86 @@ def index():
         else {}
     )
     _poems = poems.fetch().items
-    _poems = sorted(_poems, key=lambda d: d['_time'], reverse=True)
+    _poems = sorted(_poems, key=lambda d: d["_time"], reverse=True)
     return render_template(
         "index.html",
         name=user.get("username", "Not Logged In"),
-        birthday=user.get("bday", f"{random.randint(1, 13)}/{random.randint(1, 30)}/{random.randint(1990, 2022)}"),
+        birthday=user.get(
+            "bday",
+            f"{random.randint(1, 13)}/{random.randint(1, 30)}/{random.randint(1990, 2022)}",
+        ),
         location=user.get("location", "New York, NY"),
         poems=_poems,
     )
 
 
+@app.route("/poems/<id>")
+def single_poem(id):
+    user = (
+        users.fetch({"username": session["username"]}).items[0]
+        if "username" in session
+        else {}
+    )
+    poem = poems.get(id)
+    return render_template(
+        "poem.html",
+        poem=poem,
+        name=user.get("username", "Not Logged In"),
+        birthday=user.get(
+            "bday",
+            f"{random.randint(1, 13)}/{random.randint(1, 30)}/{random.randint(1990, 2022)}",
+        ),
+        location=user.get("location", "New York, NY"),
+    )
+
+
 @app.route("/compose", methods=["GET", "POST"])
 def compose():
-  if not 'username' in session:
-    return redirect(url_for('index'))
-  if request.method == 'POST':
-    title = request.form.get('title')
-    poem = request.form.get('poem')
-    author = session['username']
-    date_posted = date.today()
-    post = {
-      'title': title,
-      'poem_body': poem,
-      'posted_by': author,
-      'posted_on': str(date_posted),
-      '_time': str(datetime.now())
-    }
-    poems.insert(post)
-    return redirect(url_for('index'))
-  rules = [
+    if not "username" in session:
+        return redirect(url_for("index"))
+    if request.method == "POST":
+        title = request.form.get("title")
+        poem = request.form.get("poem")
+        author = session["username"]
+        date_posted = date.today()
+        post = {
+            "title": title,
+            "poem_body": poem,
+            "posted_by": author,
+            "posted_on": str(date_posted),
+            "_time": str(datetime.now()),
+        }
+        poems.put(post)
+        return redirect(url_for("index"))
+    rules = [
         "Do not post other people's poems without attributing them.",
         "Do not post other people's poems without their permission even if you are attributing them.",
         "No slurs will be tolerated, the poem will be deleted.",
         "If your poem mentions something triggering, a trigger warning is required in the title.",
         "if a user's poems are repeatedly deleted for slurs, being hateful, or otherwise disrupting this site, their account may be deleted.",
     ]
-  return render_template(
+    return render_template(
         "compose.html", rules=rules, page_type="signup_or_login_or_poem"
     )
 
 
 @app.route("/account")
 def account():
-  if not 'username' in session:
-    return redirect(url_for('index'))
-  user = (
+    if not "username" in session:
+        return redirect(url_for("login"))
+    user = (
         users.fetch({"username": session["username"]}).items[0]
         if "username" in session
         else {}
     )
-  return render_template(
+    return render_template(
         "account.html",
         email=user["email"],
         name=user["username"],
-        birthday=user.get("bday", f"{random.randint(1, 13)}/{random.randint(1, 30)}/{random.randint(1990, 2022)}"),
+        birthday=user.get(
+            "birthday",
+            f"{random.randint(1, 13)}/{random.randint(1, 30)}/{random.randint(1990, 2022)}",
+        ),
         location=user.get("location", "New York, NY"),
     )
 
@@ -134,7 +160,12 @@ def signup():
             flash("That username or email is already taken", "error")
             return redirect(url_for("signup"))
         hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt(prefix=b"2a"))
-        user = {"username": username, "email": email, "password": hashed.decode(), "bday":bday}
+        user = {
+            "username": username,
+            "email": email,
+            "password": hashed.decode(),
+            "bday": bday,
+        }
         users.insert(user)
         flash("Account Created Successfully!", "success")
         return redirect(url_for("login"))
@@ -150,5 +181,4 @@ def signout():
 
 
 if __name__ == "__main__":
-    print("In main")
     app.run(host="0.0.0.0", debug=True)
