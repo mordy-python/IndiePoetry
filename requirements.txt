@@ -1,0 +1,5 @@
+bcrypt==3.2.0
+deta==1.0.0
+Flask==2.0.2
+Flask-Gravatar==0.5.0
+gunicorn==20.1.0
