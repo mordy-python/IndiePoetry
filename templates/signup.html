@@ -1,0 +1,35 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+    .main {
+        width: 75%;
+        margin: auto;
+    }
+
+    @media only screen and (max-width: 768px) {
+
+        /* For mobile phones: */
+        .main {
+            width: 100%;
+        }
+    }
+</style>
+<div class="w3-container w3-card w3-white w3-round main">
+    <h4 class="w3-text-theme w3-center w3-margin-top">Create Account</h4>
+    <form action="{{ url_for('signup') }}" method="post" autocomplete="off">
+        <label class="w3-text-theme" for="username">Username</label>
+        <input class="w3-input w3-border w3-margin-bottom" type="text" name="username" id="username" required
+            placeholder="John Doe">
+        <label class="w3-text-theme" for="email">Email</label>
+        <input class="w3-input w3-border w3-margin-bottom" type="email" name="email" id="email" required
+            placeholder="JohnDoe@gmail.com">
+        <label class="w3-text-theme" for="bday">Birthday</label>
+        <input class="w3-input w3-border w3-margin-bottom" type="date" name="bday" id="bday" placeholder="01/01/2000">
+        <label class="w3-text-theme" for="password">Password</label>
+        <input class="w3-input w3-border" type="password" name="password" id="password" required placeholder="********">
+        <input class="w3-margin-top w3-button w3-theme w3-hover-theme" type="submit" value="Sign Up">
+        <div class="w3-margin-top w3-margin-bottom"><small class="w3-text-grey">Already have an account? <a
+                    href="{{ url_for('login') }}">Login here.</a></small>
+        </div>
+    </form>
+</div>
+{% endblock content %}

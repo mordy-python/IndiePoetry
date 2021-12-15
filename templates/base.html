@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<title>IndiePoetry</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue-grey.css">
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+  html,
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: "Open Sans", sans-serif
+  }
+
+  .error {
+    background-color: lightcoral;
+    border: 1px solid red;
+    cursor: pointer;
+  }
+
+  .success {
+    background-color: aquamarine;
+    border: 1px solid green;
+    cursor: pointer;
+  }
+</style>
+
+<body class="w3-theme-l5">
+  <div class="w3-top">
+    <div class="w3-bar w3-theme-d2 w3-left-align w3-large">
+      <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-theme w3-large w3-theme-d2"
+        href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
+      <a href="{{ url_for('index') }}" class="w3-bar-item w3-button w3-padding-large w3-theme-d4 w3-hover-theme"><i
+          class="fa fa-home w3-margin-right"></i>IndiePoetry</a>
+      <a href="{{ url_for('compose') }}" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-theme"
+        title="Post A New Poem"><i class="fa fa-edit"></i> New Poem</a>
+      {% if not 'username' in session %}
+      <a href="{{ url_for('login') }}" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-theme"
+        title="Post A New Poem"><i class="fa fa-user-circle"></i> Login</a>
+      {% endif %}
+      {% if 'email' in session %}
+      <a href="{{ url_for('account') }}"
+        class="w3-bar-item w3-button w3-hide-small w3-right w3-padding-large w3-hover-theme" title="My Account"><img
+          src="{{ session['email'] | gravatar }}" class="w3-circle" style="height:25px;width:25px" alt="Avatar"></a>
+      {% else %}
+      <a href="{{ url_for('account') }}"
+        class="w3-bar-item w3-button w3-hide-small w3-right w3-padding-large w3-hover-theme" title="My Account"><img
+          src="{{ range(100, 1001) | random | string | gravatar }}" class="w3-circle" style="height:25px;width:25px"
+          alt="Avatar"></a>
+      {% endif %}
+    </div>
+  </div>
+  <div id="navDemo" class="w3-bar-block w3-theme-d2 w3-hide w3-hide-large w3-hide-medium w3-large">
+    <!-- This is necessary to show the navbar correctly -->
+    <a href="#" class="w3-bar-item w3-button w3-padding-large">No Text</a>
+    <a href="{{ url_for('compose') }}" class="w3-bar-item w3-button w3-padding-large w3-hover-theme">New Poem</a>
+    {% if 'username' in session %}
+    <a href="{{ url_for('account') }}" class="w3-bar-item w3-button w3-padding-large w3-hover-theme">My Profile</a>
+    {% endif %}
+    {% if not 'username' in session %}
+    <a href="{{ url_for('login') }}" class="w3-bar-item w3-button w3-padding-large w3-hover-theme">
+      Login</a>
+    {% endif %}
+  </div>
+  <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="w3-panel {{category}} w3-display-container w3-padding-small">
+      <span onclick="this.parentElement.style.display='none'" class="w3-display-topright w3-margin">&times;</span>
+      <p>{{message}}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    {% if not page_type == "signup_or_login_or_poem" %}
+    <div class="w3-row">
+      <div class="w3-col m3">
+        <div class="w3-card w3-round w3-white">
+          <div class="w3-container">
+            <h4 class="w3-center">{{ name }}</h4>
+            {% if 'email' in session %}
+            <p class="w3-center"><img src="{{ session['email'] | gravatar }}" class="w3-circle"
+                style="height:106px;width:106px" alt="Avatar"></p>
+            {% else %}
+            <p class="w3-center"><img src="{{ range(100, 1001) | random | string | gravatar }}" class="w3-circle"
+                style="height:106px;width:106px" alt="Avatar"></p>
+            {% endif %}
+            <hr>
+            <p><i class="fa fa-home fa-fw w3-margin-right w3-text-theme"></i>{{ location }}</p>
+            <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i>{{ birthday }}</p>
+          </div>
+        </div>
+        <br>
+      </div>
+      {% endif %}
+      {% block content %}
+      {% endblock content %}
+    </div>
+    <br />
+    <script>
+      // Accordion
+      function myFunction(id) {
+        var x = document.getElementById(id);
+        if (x.className.indexOf("w3-show") == -1) {
+          x.className += " w3-show";
+          x.previousElementSibling.className += " w3-theme-d1";
+        } else {
+          x.className = x.className.replace("w3-show", "");
+          x.previousElementSibling.className =
+            x.previousElementSibling.className.replace(" w3-theme-d1", "");
+        }
+      }
+
+      // Used to toggle the menu on smaller screens when clicking on the menu button
+      function openNav() {
+        var x = document.getElementById("navDemo");
+        if (x.className.indexOf("w3-show") == -1) {
+          x.className += " w3-show";
+        } else {
+          x.className = x.className.replace(" w3-show", "");
+        }
+      }
+    </script>
+
+</body>
+
+</html>

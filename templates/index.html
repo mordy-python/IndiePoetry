@@ -1,0 +1,36 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+  pre {
+    white-space: pre-line;
+    font-family: Verdana;
+    font-size: 16px;
+  }
+</style>
+{% if poems %}
+<div class="w3-col m7">
+  {% for poem in poems %}
+
+  <div class="w3-container w3-card w3-white w3-round w3-margin-bottom w3-margin-right w3-margin-left"><br>
+    <h4 style="margin:0;" class="w3-text-theme">{{poem.title}} <small class="w3-text-grey">By: {{ poem.posted_by }} on
+        {{poem.posted_on}}</small></h4><br>
+    <hr style="margin-top:0;margin-bottom:0;" class="w3-clear">
+    <pre>
+          {{ poem.poem_body }}
+      </pre>
+    {% if 'username' in session and poem.posted_by == session['username'] %}
+    <button type="button" class="w3-red w3-button w3-margin-bottom"><i class="fa fa-trash"></i></button>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="w3-col m7">
+  <div class="w3-container w3-card w3-white w3-round w3-margin-bottom w3-margin-right w3-margin-left"><br>
+    <h4>IndiePoetry</h4><br>
+    <hr class="w3-clear">
+    <p>No New Poems :(</p>
+  </div>
+</div>
+{% endif %}
+</div>
+{% endblock content %}
