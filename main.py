@@ -5,8 +5,7 @@ from flask import (
     redirect,
     url_for,
     request,
-    flash,
-    globals,
+    flash
 )
 from deta import Deta
 import os
