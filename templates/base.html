@@ -22,13 +22,12 @@
     background-color: lightcoral;
     border: 1px solid red;
     cursor: pointer;
-  }
-
+    }
   .success {
     background-color: aquamarine;
     border: 1px solid green;
     cursor: pointer;
-  }
+    }
 </style>
 
 <body class="w3-theme-l5">
@@ -51,8 +50,7 @@
       {% else %}
       <a href="{{ url_for('account') }}"
         class="w3-bar-item w3-button w3-hide-small w3-right w3-padding-large w3-hover-theme" title="My Account"><img
-          src="{{ range(100, 1001) | random | string | gravatar }}" class="w3-circle" style="height:25px;width:25px"
-          alt="Avatar"></a>
+          src="{{ range(100, 1001) | random | string | gravatar }}" class="w3-circle" style="height:25px;width:25px" alt="Avatar"></a>
       {% endif %}
     </div>
   </div>
@@ -69,16 +67,16 @@
     {% endif %}
   </div>
   <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <div class="w3-panel {{category}} w3-display-container w3-padding-small">
-      <span onclick="this.parentElement.style.display='none'" class="w3-display-topright w3-margin">&times;</span>
-      <p>{{message}}</p>
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
+     {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="w3-panel {{category}} w3-display-container w3-padding-small">
+          <span onclick="this.parentElement.style.display='none'" class="w3-display-topright w3-margin">&times;</span>
+        <p>{{message}}</p>
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
     {% if not page_type == "signup_or_login_or_poem" %}
     <div class="w3-row">
       <div class="w3-col m3">
@@ -129,6 +127,6 @@
       }
     </script>
 
-</body>
+  </body>
 
 </html>
