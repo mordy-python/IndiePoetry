@@ -16,7 +16,7 @@
       <hr style="margin-top:0;margin-bottom:0;" class="w3-clear">
       <pre>{{ poem.poem_body }}</pre>
       {% if 'username' in session and poem.posted_by == session['username'] %}
-        <button type="button" class="w3-red w3-button w3-margin-bottom"><i class="fa fa-trash"></i></button>
+      <a class="w3-red w3-button w3-margin-bottom w3-hover-red" href="{{url_for('delete', id=poem.key)}}"><i class="fa fa-trash"></i></a>
       {% endif %}
     </div>
 </div>
