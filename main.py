@@ -1,12 +1,4 @@
-from flask import (
-    Flask,
-    render_template,
-    session,
-    redirect,
-    url_for,
-    request,
-    flash
-)
+from flask import Flask, render_template, session, redirect, url_for, request, flash
 from deta import Deta
 import os
 from flask_gravatar import Gravatar
@@ -15,8 +7,8 @@ from datetime import date, datetime
 import random
 
 app = Flask(__name__)
-deta = Deta("")
-app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
+deta = Deta("b03oxp00_qDTFNmBnqUrLY43FmivmyHBGEHemoYZw")
+app.config["SECRET_KEY"] = "bonjour"  # os.environ["SECRET_KEY"]
 
 gravatar = Gravatar(
     app,
@@ -30,6 +22,13 @@ gravatar = Gravatar(
 
 poems = deta.Base("poems")
 users = deta.Base("users")
+pfps = deta.Drive("pfps")
+
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp", "jfif"}
+
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route("/")
@@ -115,9 +114,9 @@ def account():
     return render_template(
         "account.html",
         email=user["email"],
-        name=user["username"],
+        name=user.get("username", "Not Logged In"),
         birthday=user.get(
-            "birthday",
+            "bday",
             f"{random.randint(1, 13)}/{random.randint(1, 30)}/{random.randint(1990, 2022)}",
         ),
         location=user.get("location", "New York, NY"),
@@ -166,7 +165,7 @@ def signup():
             "password": hashed.decode(),
             "bday": bday,
         }
-        users.insert(user)
+        users.put(user)
         flash("Account Created Successfully!", "success")
         return redirect(url_for("login"))
     return render_template("signup.html", page_type="signup_or_login_or_poem")
@@ -179,11 +178,18 @@ def signout():
         session.pop("email")
     return redirect(url_for("index"))
 
-@app.route('/delete')
+
+@app.route("/delete")
 def delete():
-    poems.delete(request.args['id']) if 'username' in session else ''
-    flash('Post deleted successfully!', 'success')
-    return redirect(url_for('index'))
+    poems.delete(request.args["id"]) if "username" in session else ""
+    flash("Post deleted successfully!", "success")
+    return redirect(url_for("index"))
+
+
+@app.route("/upload", methods=["POST"])
+def upload():
+    return "Hello"
+
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    app.run()
