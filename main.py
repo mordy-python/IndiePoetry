@@ -179,6 +179,11 @@ def signout():
         session.pop("email")
     return redirect(url_for("index"))
 
+@app.route('/delete')
+def delete():
+    poems.delete(request.args['id']) if 'username' in session else ''
+    flash('Post deleted successfully!', 'success')
+    return redirect(url_for('index'))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
