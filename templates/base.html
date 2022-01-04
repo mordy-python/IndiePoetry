@@ -1,12 +1,38 @@
 <!DOCTYPE html>
 <html>
-<title>IndiePoetry</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue-grey.css">
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<head>
+  <title>IndiePoetry</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{url_for('static', filename='w3.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='theme.css')}}">
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <meta name="description" content="Share your poems with the world!">
+
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:image" content="{{url_for('static', filename='banner.png')}}">
+  <meta name="twitter:image" content="{{url_for('static', filename='banner.png')}}">
+  <meta property="twitter:domain" content="indiepoetry.herokuapp.com">
+  
+  {% if page_type != 'poem_page' %}
+    <meta name="twitter:title" content="IndiePoetry">
+    <meta property="og:title" content="IndiePoetry">
+    <meta property="twitter:url" content="https://indiepoetry.herokuapp.com/">
+    <meta property="og:url" content="https://indiepoetry.herokuapp.com/">
+    <meta name="twitter:description" content="Share your poems with the world!">
+    <meta property="og:description" content="Share your poems with the world!">
+  {% else %}
+    <meta name="twitter:title" content="{{poem.title}}">
+    <meta property="og:title" content="{{poem.title}}">
+    <meta property="twitter:url" content="https://indiepoetry.herokuapp.com/poems/{{poem.key}}">
+    <meta property="og:url" content="https://indiepoetry.herokuapp.com/poems/{{poem.key}}">
+    <meta name="twitter:description" content="A poem by {{poem.posted_by}}">
+    <meta property="og:description" content="A poem by {{poem.posted_by}}">
+  {% endif %}
+</head>
 <style>
   html,
   body,
@@ -22,12 +48,13 @@
     background-color: lightcoral;
     border: 1px solid red;
     cursor: pointer;
-    }
+  }
+
   .success {
     background-color: aquamarine;
     border: 1px solid green;
     cursor: pointer;
-    }
+  }
 </style>
 
 <body class="w3-theme-l5">
@@ -50,7 +77,8 @@
       {% else %}
       <a href="{{ url_for('account') }}"
         class="w3-bar-item w3-button w3-hide-small w3-right w3-padding-large w3-hover-theme" title="My Account"><img
-          src="{{ range(100, 1001) | random | string | gravatar }}" class="w3-circle" style="height:25px;width:25px" alt="Avatar"></a>
+          src="{{ range(100, 1001) | random | string | gravatar }}" class="w3-circle" style="height:25px;width:25px"
+          alt="Avatar"></a>
       {% endif %}
     </div>
   </div>
@@ -67,16 +95,16 @@
     {% endif %}
   </div>
   <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
-     {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-      {% for category, message in messages %}
-      <div class="w3-panel {{category}} w3-display-container w3-padding-small">
-          <span onclick="this.parentElement.style.display='none'" class="w3-display-topright w3-margin">&times;</span>
-        <p>{{message}}</p>
-      </div>
-      {% endfor %}
-      {% endif %}
-      {% endwith %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="w3-panel {{category}} w3-display-container w3-padding-small">
+      <span onclick="this.parentElement.style.display='none'" class="w3-display-topright w3-margin">&times;</span>
+      <p>{{message}}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
     {% if not page_type == "signup_or_login_or_poem" %}
     <div class="w3-row">
       <div class="w3-col m3">
@@ -126,7 +154,8 @@
         }
       }
     </script>
-
-  </body>
+    <script async src="https://offen-indiepoetry.herokuapp.com/script.js"
+      data-account-id="d73b8d93-c7d9-4741-adda-02b3ac9eae53"></script>
+</body>
 
 </html>
