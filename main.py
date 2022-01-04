@@ -69,6 +69,7 @@ def single_poem(id):
             f"{random.randint(1, 13)}/{random.randint(1, 30)}/{random.randint(1990, 2022)}",
         ),
         location=user.get("location", "New York, NY"),
+        page_type="poem_page"
     )
 
 
@@ -111,6 +112,7 @@ def account():
         if "username" in session
         else {}
     )
+    num_poems = len(poems.fetch({'posted_by':session['username']}).items)
     return render_template(
         "account.html",
         email=user["email"],
@@ -120,6 +122,7 @@ def account():
             f"{random.randint(1, 13)}/{random.randint(1, 30)}/{random.randint(1990, 2022)}",
         ),
         location=user.get("location", "New York, NY"),
+        num_poems=num_poems
     )
 
 
@@ -192,4 +195,4 @@ def upload():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
