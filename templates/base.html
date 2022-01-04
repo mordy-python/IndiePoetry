@@ -5,26 +5,33 @@
   <title>IndiePoetry</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue-grey.css">
+  <link rel="stylesheet" href="{{url_for('static', filename='w3.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='theme.css')}}">
   <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <meta name="description" content="Share your poems with the world!">
 
-  <!-- Facebook Meta Tags -->
-  <meta property="og:url" content="https://indiepoetry.herokuapp.com/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="IndiePoetry">
-  <meta property="og:description" content="Share your poems with the world!">
-  <meta property="og:image" content="{{url_for('static', filename='banner.png')}}">
-
-  <!-- Twitter Meta Tags -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta property="twitter:domain" content="indiepoetry.herokuapp.com">
-  <meta property="twitter:url" content="https://indiepoetry.herokuapp.com/">
-  <meta name="twitter:title" content="IndiePoetry">
-  <meta name="twitter:description" content="Share your poems with the world!">
+  <meta property="og:image" content="{{url_for('static', filename='banner.png')}}">
   <meta name="twitter:image" content="{{url_for('static', filename='banner.png')}}">
+  <meta property="twitter:domain" content="indiepoetry.herokuapp.com">
+  
+  {% if page_type != 'poem_page' %}
+    <meta name="twitter:title" content="IndiePoetry">
+    <meta property="og:title" content="IndiePoetry">
+    <meta property="twitter:url" content="https://indiepoetry.herokuapp.com/">
+    <meta property="og:url" content="https://indiepoetry.herokuapp.com/">
+    <meta name="twitter:description" content="Share your poems with the world!">
+    <meta property="og:description" content="Share your poems with the world!">
+  {% else %}
+    <meta name="twitter:title" content="{{poem.title}}">
+    <meta property="og:title" content="{{poem.title}}">
+    <meta property="twitter:url" content="https://indiepoetry.herokuapp.com/poems/{{poem.key}}">
+    <meta property="og:url" content="https://indiepoetry.herokuapp.com/poems/{{poem.key}}">
+    <meta name="twitter:description" content="A poem by {{poem.posted_by}}">
+    <meta property="og:description" content="A poem by {{poem.posted_by}}">
+  {% endif %}
 </head>
 <style>
   html,
