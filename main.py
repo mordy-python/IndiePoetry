@@ -5,9 +5,12 @@ from flask_gravatar import Gravatar
 import bcrypt
 from datetime import date, datetime
 import random
-import dotenv
 
-dotenv.load_dotenv('.env')
+try:
+    import dotenv
+    dotenv.load_dotenv('.env')
+except ModuleNotFoundError: # We're not running locally
+    pass
 
 app = Flask(__name__)
 deta = Deta("")
