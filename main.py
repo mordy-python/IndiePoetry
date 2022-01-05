@@ -49,6 +49,7 @@ def index():
         ),
         location=user.get("location", "New York, NY"),
         poems=_poems,
+        title='Home'
     )
 
 
@@ -69,7 +70,8 @@ def single_poem(id):
             f"{random.randint(1, 13)}/{random.randint(1, 30)}/{random.randint(1990, 2022)}",
         ),
         location=user.get("location", "New York, NY"),
-        page_type="poem_page"
+        page_type="poem_page",
+        title=poem['title']
     )
 
 
@@ -99,7 +101,7 @@ def compose():
         "if a user's poems are repeatedly deleted for slurs, being hateful, or otherwise disrupting this site, their account may be deleted.",
     ]
     return render_template(
-        "compose.html", rules=rules, page_type="signup_or_login_or_poem"
+        "compose.html", rules=rules, page_type="signup_or_login_or_poem", title = 'New Poem'
     )
 
 
@@ -122,7 +124,8 @@ def account():
             f"{random.randint(1, 13)}/{random.randint(1, 30)}/{random.randint(1990, 2022)}",
         ),
         location=user.get("location", "New York, NY"),
-        num_poems=num_poems
+        num_poems=num_poems,
+        title='My Account'
     )
 
 
@@ -143,7 +146,7 @@ def login():
             return redirect(url_for("index"))
         else:
             flash("Invalid username or password", "error")
-    return render_template("login.html", page_type="signup_or_login_or_poem")
+    return render_template("login.html", page_type="signup_or_login_or_poem", title='Login')
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -171,7 +174,7 @@ def signup():
         users.put(user)
         flash("Account Created Successfully!", "success")
         return redirect(url_for("login"))
-    return render_template("signup.html", page_type="signup_or_login_or_poem")
+    return render_template("signup.html", page_type="signup_or_login_or_poem", title='Signup')
 
 
 @app.route("/signout")
