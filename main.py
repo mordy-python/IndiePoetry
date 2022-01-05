@@ -200,7 +200,8 @@ def delete():
 @app.route('/poets/<user_id>')
 def profile(user_id):
   user = users.get(user_id)
-  return render_template('profile.html', user=user)
+  users_poems = sorted(poems.fetch({'posted_by':user['username']}).items, key=lambda x: x['_time'], reverse=True)
+  return render_template('profile.html', user=user, page_type="signup_or_login_or_poem", title=f'{user["username"]}\'s profile', num_poems=len(users_poems), poems=users_poems)
 
 @app.route("/upload", methods=["POST"])
 def upload():
