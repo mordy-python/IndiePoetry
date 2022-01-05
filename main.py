@@ -5,6 +5,9 @@ from flask_gravatar import Gravatar
 import bcrypt
 from datetime import date, datetime
 import random
+import dotenv
+
+dotenv.load_dotenv('.env')
 
 app = Flask(__name__)
 deta = Deta("")
@@ -61,6 +64,7 @@ def single_poem(id):
         else {}
     )
     poem = poems.get(id)
+    author_id = users.fetch({"username":poem["posted_by"]}).items[0]['key']
     return render_template(
         "poem.html",
         poem=poem,
@@ -71,7 +75,8 @@ def single_poem(id):
         ),
         location=user.get("location", "New York, NY"),
         page_type="poem_page",
-        title=poem['title']
+        title=poem['title'],
+        author_id=author_id
     )
 
 
@@ -114,7 +119,7 @@ def account():
         if "username" in session
         else {}
     )
-    num_poems = len(poems.fetch({'posted_by':session['username']}).items)
+    user_poems = poems.fetch({'posted_by':session['username']}).items
     return render_template(
         "account.html",
         email=user["email"],
@@ -124,7 +129,8 @@ def account():
             f"{random.randint(1, 13)}/{random.randint(1, 30)}/{random.randint(1990, 2022)}",
         ),
         location=user.get("location", "New York, NY"),
-        num_poems=num_poems,
+        num_poems=len(user_poems),
+        users_poems=user_poems,
         title='My Account'
     )
 
@@ -191,6 +197,10 @@ def delete():
     flash("Post deleted successfully!", "success")
     return redirect(url_for("index"))
 
+@app.route('/poets/<user_id>')
+def profile(user_id):
+  user = users.get(user_id)
+  return render_template('profile.html', user=user)
 
 @app.route("/upload", methods=["POST"])
 def upload():
