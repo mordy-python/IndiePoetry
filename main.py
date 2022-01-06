@@ -137,7 +137,8 @@ def account():
         location=user.get("location", "New York, NY"),
         num_poems=len(user_poems),
         users_poems=user_poems,
-        title='My Account'
+        title='My Account',
+        page_type='account'
     )
 
 
