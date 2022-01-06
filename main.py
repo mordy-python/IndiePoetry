@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, redirect, url_for, request, flash
+from flask import Flask, render_template, send_from_directory, session, redirect, url_for, request, flash
 from deta import Deta
 import os
 from flask_gravatar import Gravatar
@@ -36,7 +36,10 @@ ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp", "jfif"}
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
+# Sitemap.xml
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory('.', 'sitemap.xml')
 @app.route("/")
 def index():
     user = (
