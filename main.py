@@ -1,4 +1,13 @@
-from flask import Flask, render_template, send_from_directory, session, redirect, url_for, request, flash
+from flask import (
+    Flask,
+    render_template,
+    send_from_directory,
+    session,
+    redirect,
+    url_for,
+    request,
+    flash,
+)
 from deta import Deta
 import os
 from flask_gravatar import Gravatar
@@ -8,13 +17,14 @@ import random
 
 try:
     import dotenv
-    dotenv.load_dotenv('.env')
-except ModuleNotFoundError: # We're not running locally
+
+    dotenv.load_dotenv(".env")
+except ModuleNotFoundError:  # We're not running locally
     pass
 
 app = Flask(__name__)
 deta = Deta("")
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", 'super-secret-key')
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "super-secret-key")
 
 gravatar = Gravatar(
     app,
@@ -36,10 +46,13 @@ ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp", "jfif"}
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
 # Sitemap.xml
-@app.route('/sitemap.xml')
+@app.route("/sitemap.xml")
 def sitemap():
-    return send_from_directory('.', 'sitemap.xml')
+    return send_from_directory(".", "sitemap.xml")
+
+
 @app.route("/")
 def index():
     user = (
@@ -58,7 +71,7 @@ def index():
         ),
         location=user.get("location", "New York, NY"),
         poems=_poems,
-        title='Home'
+        title="Home",
     )
 
 
@@ -70,7 +83,7 @@ def single_poem(id):
         else {}
     )
     poem = poems.get(id)
-    author_id = users.fetch({"username":poem["posted_by"]}).items[0]['key']
+    author_id = users.fetch({"username": poem["posted_by"]}).items[0]["key"]
     return render_template(
         "poem.html",
         poem=poem,
@@ -81,8 +94,8 @@ def single_poem(id):
         ),
         location=user.get("location", "New York, NY"),
         page_type="poem_page",
-        title=poem['title'],
-        author_id=author_id
+        title=poem["title"],
+        author_id=author_id,
     )
 
 
@@ -112,7 +125,10 @@ def compose():
         "if a user's poems are repeatedly deleted for slurs, being hateful, or otherwise disrupting this site, their account may be deleted.",
     ]
     return render_template(
-        "compose.html", rules=rules, page_type="signup_or_login_or_poem", title = 'New Poem'
+        "compose.html",
+        rules=rules,
+        page_type="signup_or_login_or_poem",
+        title="New Poem",
     )
 
 
@@ -125,7 +141,7 @@ def account():
         if "username" in session
         else {}
     )
-    user_poems = poems.fetch({'posted_by':session['username']}).items
+    user_poems = poems.fetch({"posted_by": session["username"]}).items
     return render_template(
         "account.html",
         email=user["email"],
@@ -137,13 +153,15 @@ def account():
         location=user.get("location", "New York, NY"),
         num_poems=len(user_poems),
         users_poems=user_poems,
-        title='My Account',
-        page_type='account'
+        title="My Account",
+        page_type="account",
     )
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if "username" in session:
+        return redirect(url_for("index"))
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -159,11 +177,15 @@ def login():
             return redirect(url_for("index"))
         else:
             flash("Invalid username or password", "error")
-    return render_template("login.html", page_type="signup_or_login_or_poem", title='Login')
+    return render_template(
+        "login.html", page_type="signup_or_login_or_poem", title="Login"
+    )
 
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+    if "username" in session:
+        return redirect(url_for("index"))
     if request.method == "POST":
         username = request.form["username"]
         email = request.form["email"]
@@ -187,7 +209,9 @@ def signup():
         users.put(user)
         flash("Account Created Successfully!", "success")
         return redirect(url_for("login"))
-    return render_template("signup.html", page_type="signup_or_login_or_poem", title='Signup')
+    return render_template(
+        "signup.html", page_type="signup_or_login_or_poem", title="Signup"
+    )
 
 
 @app.route("/signout")
@@ -204,11 +228,24 @@ def delete():
     flash("Post deleted successfully!", "success")
     return redirect(url_for("index"))
 
-@app.route('/poets/<user_id>')
+
+@app.route("/poets/<user_id>")
 def profile(user_id):
-  user = users.get(user_id)
-  users_poems = sorted(poems.fetch({'posted_by':user['username']}).items, key=lambda x: x['_time'], reverse=True)
-  return render_template('profile.html', user=user, page_type="signup_or_login_or_poem", title=f'{user["username"]}\'s profile', num_poems=len(users_poems), poems=users_poems)
+    user = users.get(user_id)
+    users_poems = sorted(
+        poems.fetch({"posted_by": user["username"]}).items,
+        key=lambda x: x["_time"],
+        reverse=True,
+    )
+    return render_template(
+        "profile.html",
+        user=user,
+        page_type="signup_or_login_or_poem",
+        title=f'{user["username"]}\'s profile',
+        num_poems=len(users_poems),
+        poems=users_poems,
+    )
+
 
 @app.route("/upload", methods=["POST"])
 def upload():
