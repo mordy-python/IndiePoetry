@@ -14,7 +14,7 @@ except ModuleNotFoundError: # We're not running locally
 
 app = Flask(__name__)
 deta = Deta("")
-app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", 'super-secret-key')
 
 gravatar = Gravatar(
     app,
@@ -47,7 +47,7 @@ def index():
         if "username" in session
         else {}
     )
-    _poems = poems.fetch().items
+    _poems = poems.fetch({'hidden':False}).items
     _poems = sorted(_poems, key=lambda d: d["_time"], reverse=True)
     return render_template(
         "index.html",
