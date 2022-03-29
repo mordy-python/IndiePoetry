@@ -14,6 +14,7 @@ from flask_gravatar import Gravatar
 import bcrypt
 from datetime import date, datetime
 import random
+from hashlib import md5
 
 try:
     import dotenv
@@ -121,8 +122,8 @@ def compose():
         "Do not post other people's poems without attributing them.",
         "Do not post other people's poems without their permission even if you are attributing them.",
         "No slurs will be tolerated, the poem will be deleted.",
-        "If your poem mentions something triggering, a trigger warning is required in the title.",
-        "if a user's poems are repeatedly deleted for slurs, being hateful, or otherwise disrupting this site, their account may be deleted.",
+        # "If your poem mentions something triggering, a trigger warning is required in the title.",
+        "If a user's poems are repeatedly deleted for slurs, being hateful, or otherwise disrupting this site, their account may be deleted.",
     ]
     return render_template(
         "compose.html",
@@ -158,6 +159,27 @@ def account():
     )
 
 
+@app.route("/save-account-data", methods=["POST"])
+def save_account_data():
+    data = request.form
+    username = data.get("username", session["username"])
+    email = data.get("email", session["email"])
+    location = data.get("location", "New York, NY")
+    user = users.fetch({"username": session["username"]}).items[0]
+    user_id = user["key"]
+    users.update(
+        {"username": username, "email": email, "location": location}, key=user_id
+    )
+    session["username"] = username
+    flash("Successfully update your info!", "success")
+    return redirect(url_for("account"))
+
+
+def avatar(email):
+    digest = md5(email.lower().encode("utf-8")).hexdigest()
+    return f"https://www.gravatar.com/avatar/{digest}?d=robohash&s=64"
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if "username" in session:
@@ -173,6 +195,7 @@ def login():
         if bcrypt.checkpw(password.encode(), stored_pwd):
             session["username"] = user_exists.items[0]["username"]
             session["email"] = user_exists.items[0]["email"]
+            # session['pfp'] = user_exists.items[0]["avatar"]
             flash("Logged in successfully!", "success")
             return redirect(url_for("index"))
         else:
@@ -205,6 +228,7 @@ def signup():
             "email": email,
             "password": hashed.decode(),
             "bday": bday,
+            "avatar": avatar(email),
         }
         users.put(user)
         flash("Account Created Successfully!", "success")
