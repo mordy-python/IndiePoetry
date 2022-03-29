@@ -2,23 +2,21 @@
 <div class="w3-col m7">
   <div class="w3-container w3-card w3-white w3-round w3-margin-bottom w3-margin-right w3-margin-left">
     <br />
-    <form>
+    <form action="{{url_for('save_account_data')}}" method="POST">
       <h2 class="w3-text-theme w3-center">Account Data</h2>
       <div class="w3-margin-bottom">
         <label class="w3-text-theme"><b>Username</b></label>
-        <input class="w3-input w3-border w3-round" name="username" type="text" value="{{ name }}" readonly />
-        <small style="color: #7d97a5">Username cannot be modified</small>
+        <input class="w3-input w3-border w3-round" name="username" type="text" value="{{ name }}" />
       </div>
       <div class="w3-margin-bottom">
         <label class="w3-text-theme"><b>Email</b></label>
-        <input class="w3-input w3-border w3-round" name="email" type="email" value="{{ email }}" readonly />
-        <small style="color: #7d97a5">Email cannot be modified</small>
+        <input class="w3-input w3-border w3-round" name="email" type="email" value="{{ email }}" />
       </div>
       <div class="w3-margin-bottom">
         <label class="w3-text-theme"><b>Location</b></label>
-        <input class="w3-input w3-border w3-round" name="location" type="text" value="{{ location }}" required />
+        <input class="w3-input w3-border w3-round" name="location" type="text" value="{{ location }}" />
       </div>
-      <button class="w3-button w3-hover-theme w3-theme w3-margin-bottom">
+      <button class="w3-button w3-hover-theme w3-theme w3-margin-bottom" type="submit">
         Save Data
       </button>
       <a class="w3-button w3-hover-red w3-red w3-margin-bottom" href="{{ url_for('signout') }}">
