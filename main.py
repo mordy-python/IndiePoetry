@@ -47,7 +47,7 @@ def index():
         if "username" in session
         else {}
     )
-    _poems = poems.fetch({'hidden':False}).items
+    _poems = poems.fetch().items
     _poems = sorted(_poems, key=lambda d: d["_time"], reverse=True)
     return render_template(
         "index.html",
